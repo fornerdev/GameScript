@@ -1,6 +1,5 @@
-```html
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -36,11 +35,14 @@
             color: #333;
         }
 
+        /*
+         * Los dos botones empiezan juntos
+         */
         .buttons {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 25px;
+            gap: 20px;
         }
 
         button {
@@ -58,20 +60,19 @@
             color: white;
             position: relative;
             z-index: 10;
-        }
 
-        #yes:active {
-            transform: scale(0.95);
+            transition:
+                left 0.3s ease,
+                top 0.3s ease,
+                transform 0.2s ease;
         }
 
         #no {
             background: #f44336;
             color: white;
 
-            /* Importante: permite moverlo libremente */
-            position: fixed;
-
-            z-index: 20;
+            position: relative;
+            z-index: 10;
 
             transition:
                 left 0.25s ease,
@@ -79,6 +80,9 @@
                 transform 0.15s ease;
         }
 
+        /*
+         * Animación cuando un botón escapa
+         */
         .shake {
             animation: shake 0.3s;
         }
@@ -91,11 +95,64 @@
             100% { transform: translateX(0); }
         }
 
-        .success {
-            animation: appear 0.5s ease;
+
+        /*
+         * MODAL
+         */
+        .modal {
+            display: none;
+
+            position: fixed;
+            z-index: 100;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.45);
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 25px;
         }
 
-        @keyframes appear {
+        .modal-content {
+            background: white;
+
+            width: 100%;
+            max-width: 380px;
+
+            padding: 35px 25px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+
+            animation: modalAppear 0.3s ease;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 25px 0;
+
+            font-size: 28px;
+
+            color: #333;
+        }
+
+        .modal-content button {
+            background: #333;
+            color: white;
+
+            min-width: 120px;
+        }
+
+        @keyframes modalAppear {
+
             from {
                 opacity: 0;
                 transform: scale(0.7);
@@ -107,8 +164,16 @@
             }
         }
 
+
+        /*
+         * Pantalla final
+         */
+        .success {
+            animation: modalAppear 0.5s ease;
+        }
+
         .hearts {
-            font-size: 45px;
+            font-size: 50px;
             margin-bottom: 20px;
         }
     </style>
@@ -116,10 +181,11 @@
 
 <body>
 
+
     <div class="container" id="content">
 
         <h1>
-            ¿Quieres quedar conmigo? ❤️
+            Vols quedar amb mi? ❤️
         </h1>
 
         <div class="buttons">
@@ -137,85 +203,94 @@
     </div>
 
 
+    <!-- MODAL -->
+
+    <div class="modal" id="modal">
+
+        <div class="modal-content">
+
+            <h2 id="modalMessage">
+                No sóc tan fàcil 😏
+            </h2>
+
+            <button id="closeModal">
+                Continuar
+            </button>
+
+        </div>
+
+    </div>
+
+
     <script>
 
-        var noButton = document.getElementById("no");
         var yesButton = document.getElementById("yes");
+        var noButton = document.getElementById("no");
+
+        var modal = document.getElementById("modal");
+        var modalMessage = document.getElementById("modalMessage");
+        var closeModal = document.getElementById("closeModal");
+
+        /*
+         * Contador de intentos
+         */
+        var yesAttempts = 0;
 
 
         /*
-         * Mueve el botón "No" a una posición aleatoria
-         * pero siempre manteniéndolo dentro de la pantalla.
+         * Mueve un botón a una posición aleatoria
+         * dentro de la pantalla.
          */
-        function moveNoButton() {
+        function moveButton(button) {
 
-            var buttonWidth = noButton.offsetWidth;
-            var buttonHeight = noButton.offsetHeight;
+            var buttonWidth = button.offsetWidth;
+            var buttonHeight = button.offsetHeight;
 
-            var padding = 15;
+            var padding = 20;
 
             var maxX = window.innerWidth - buttonWidth - padding;
             var maxY = window.innerHeight - buttonHeight - padding;
 
-            var minX = padding;
-            var minY = padding;
-
-            var x = minX + Math.random() * (maxX - minX);
-            var y = minY + Math.random() * (maxY - minY);
-
-            noButton.style.left = x + "px";
-            noButton.style.top = y + "px";
-
+            var x = padding + Math.random() * (maxX - padding);
+            var y = padding + Math.random() * (maxY - padding);
 
             /*
-             * Pequeño efecto de "miedo"
+             * Cambiamos a fixed para poder moverlo
+             * por toda la pantalla.
              */
-            noButton.classList.remove("shake");
+            button.style.position = "fixed";
 
-            // Forzamos al navegador a reiniciar la animación
-            void noButton.offsetWidth;
+            button.style.left = x + "px";
+            button.style.top = y + "px";
 
-            noButton.classList.add("shake");
+            /*
+             * Animación
+             */
+            button.classList.remove("shake");
+
+            void button.offsetWidth;
+
+            button.classList.add("shake");
         }
 
 
         /*
-         * PC
-         *
-         * Cuando el ratón intenta entrar en el botón,
-         * este sale corriendo.
+         * Mostrar modal
          */
-        noButton.addEventListener("mouseenter", function() {
+        function showModal(message) {
 
-            moveNoButton();
+            modalMessage.textContent = message;
 
-        });
+            modal.style.display = "flex";
+        }
 
 
         /*
-         * MÓVIL
-         *
-         * Cuando intentan tocar el botón,
-         * se mueve inmediatamente.
+         * Cerrar modal
          */
-        noButton.addEventListener("touchstart", function(event) {
+        closeModal.addEventListener("click", function() {
 
-            event.preventDefault();
-
-            moveNoButton();
-
-        });
-
-
-        /*
-         * También capturamos click por si algún navegador
-         * llega a generarlo después del touch.
-         */
-        noButton.addEventListener("click", function(event) {
-
-            event.preventDefault();
-
-            moveNoButton();
+            modal.style.display = "none";
 
         });
 
@@ -223,38 +298,135 @@
         /*
          * BOTÓN SÍ
          */
-        yesButton.addEventListener("click", function() {
+        function tryYes() {
 
-            document.getElementById("content").innerHTML = `
-                
-                <div class="success">
+            yesAttempts++;
 
-                    <div class="hearts">
-                        ❤️ 💕 ❤️
+
+            /*
+             * PRIMER INTENTO
+             */
+            if (yesAttempts === 1) {
+
+                moveButton(yesButton);
+
+                showModal(
+                    "No sóc tan fàcil 😏"
+                );
+
+                return;
+            }
+
+
+            /*
+             * SEGUNDO INTENTO
+             */
+            if (yesAttempts === 2) {
+
+                moveButton(yesButton);
+
+                showModal(
+                    "Quasi m'has convençut 😏"
+                );
+
+                return;
+            }
+
+
+            /*
+             * TERCER INTENTO
+             */
+            if (yesAttempts >= 3) {
+
+                document.getElementById("content").innerHTML = `
+
+                    <div class="success">
+
+                        <div class="hearts">
+                            ❤️ 💕 ❤️
+                        </div>
+
+                        <h1>
+                            Vinga va, accepto ❤️
+                        </h1>
+
+                        <p style="font-size:22px;">
+                            Quan quedem? 😏
+                        </p>
+
                     </div>
 
-                    <h1>
-                        Sabía que dirías que sí 😍
-                    </h1>
+                `;
 
-                    <p style="font-size: 22px;">
-                        Entonces... ¿cuándo quedamos? 😉
-                    </p>
+                modal.style.display = "none";
+            }
 
-                </div>
+        }
 
-            `;
+
+        /*
+         * PC + móvil
+         */
+        yesButton.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            tryYes();
 
         });
 
 
         /*
-         * Al cambiar orientación o tamaño de pantalla,
-         * recolocamos el botón para que siga siendo visible.
+         * BOTÓN NO
+         *
+         * En PC: escapa cuando acercas el ratón.
+         */
+        noButton.addEventListener("mouseenter", function() {
+
+            moveButton(noButton);
+
+        });
+
+
+        /*
+         * En móvil: escapa cuando lo tocas.
+         */
+        noButton.addEventListener("touchstart", function(event) {
+
+            event.preventDefault();
+
+            moveButton(noButton);
+
+        });
+
+
+        /*
+         * Evita que el click posterior del móvil
+         * llegue a ejecutarse.
+         */
+        noButton.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            moveButton(noButton);
+
+        });
+
+
+        /*
+         * Si gira el móvil o cambia el tamaño,
+         * recolocamos los botones.
          */
         window.addEventListener("resize", function() {
 
-            moveNoButton();
+            /*
+             * Solo recolocamos si ya han empezado a moverse.
+             */
+            if (yesAttempts > 0) {
+
+                moveButton(yesButton);
+
+            }
 
         });
 
