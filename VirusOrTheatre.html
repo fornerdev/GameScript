@@ -1,0 +1,264 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Una pregunta ❤️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ffe6ef, #fff5f8);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: clamp(28px, 7vw, 44px);
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+        }
+
+        button {
+            border: none;
+            padding: 15px 30px;
+            min-width: 110px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #yes {
+            background: #4CAF50;
+            color: white;
+            position: relative;
+            z-index: 10;
+        }
+
+        #yes:active {
+            transform: scale(0.95);
+        }
+
+        #no {
+            background: #f44336;
+            color: white;
+
+            /* Importante: permite moverlo libremente */
+            position: fixed;
+
+            z-index: 20;
+
+            transition:
+                left 0.25s ease,
+                top 0.25s ease,
+                transform 0.15s ease;
+        }
+
+        .shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%   { transform: translateX(0); }
+            25%  { transform: translateX(-8px) rotate(-3deg); }
+            50%  { transform: translateX(8px) rotate(3deg); }
+            75%  { transform: translateX(-8px) rotate(-3deg); }
+            100% { transform: translateX(0); }
+        }
+
+        .success {
+            animation: appear 0.5s ease;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hearts {
+            font-size: 45px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container" id="content">
+
+        <h1>
+            ¿Quieres quedar conmigo? ❤️
+        </h1>
+
+        <div class="buttons">
+
+            <button id="yes">
+                Sí 😍
+            </button>
+
+            <button id="no">
+                No 😢
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        var noButton = document.getElementById("no");
+        var yesButton = document.getElementById("yes");
+
+
+        /*
+         * Mueve el botón "No" a una posición aleatoria
+         * pero siempre manteniéndolo dentro de la pantalla.
+         */
+        function moveNoButton() {
+
+            var buttonWidth = noButton.offsetWidth;
+            var buttonHeight = noButton.offsetHeight;
+
+            var padding = 15;
+
+            var maxX = window.innerWidth - buttonWidth - padding;
+            var maxY = window.innerHeight - buttonHeight - padding;
+
+            var minX = padding;
+            var minY = padding;
+
+            var x = minX + Math.random() * (maxX - minX);
+            var y = minY + Math.random() * (maxY - minY);
+
+            noButton.style.left = x + "px";
+            noButton.style.top = y + "px";
+
+
+            /*
+             * Pequeño efecto de "miedo"
+             */
+            noButton.classList.remove("shake");
+
+            // Forzamos al navegador a reiniciar la animación
+            void noButton.offsetWidth;
+
+            noButton.classList.add("shake");
+        }
+
+
+        /*
+         * PC
+         *
+         * Cuando el ratón intenta entrar en el botón,
+         * este sale corriendo.
+         */
+        noButton.addEventListener("mouseenter", function() {
+
+            moveNoButton();
+
+        });
+
+
+        /*
+         * MÓVIL
+         *
+         * Cuando intentan tocar el botón,
+         * se mueve inmediatamente.
+         */
+        noButton.addEventListener("touchstart", function(event) {
+
+            event.preventDefault();
+
+            moveNoButton();
+
+        });
+
+
+        /*
+         * También capturamos click por si algún navegador
+         * llega a generarlo después del touch.
+         */
+        noButton.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            moveNoButton();
+
+        });
+
+
+        /*
+         * BOTÓN SÍ
+         */
+        yesButton.addEventListener("click", function() {
+
+            document.getElementById("content").innerHTML = `
+                
+                <div class="success">
+
+                    <div class="hearts">
+                        ❤️ 💕 ❤️
+                    </div>
+
+                    <h1>
+                        Sabía que dirías que sí 😍
+                    </h1>
+
+                    <p style="font-size: 22px;">
+                        Entonces... ¿cuándo quedamos? 😉
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+
+        /*
+         * Al cambiar orientación o tamaño de pantalla,
+         * recolocamos el botón para que siga siendo visible.
+         */
+        window.addEventListener("resize", function() {
+
+            moveNoButton();
+
+        });
+
+    </script>
+
+</body>
+</html>
