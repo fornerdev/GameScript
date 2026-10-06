@@ -185,8 +185,12 @@
     <div class="container" id="content">
 
         <h1>
-            Vols quedar amb mi? ❤️
+            Clica la opciò correcte
         </h1>
+
+        <h2>
+            Anem al teatre? ❤️
+        </h2>
 
         <div class="buttons">
 
@@ -342,23 +346,22 @@
 
                     <div class="success">
 
-                        <div class="hearts">
-                            ❤️ 💕 ❤️
-                        </div>
-
                         <h1>
-                            Vinga va, accepto ❤️
+                            Vinga va... accepto
                         </h1>
 
-                        <p style="font-size:22px;">
-                            Quan quedem? 😏
-                        </p>
+                       <button id="chooseDay"> 
+                            Escull dia
+                        </button> 
+                    
+                    </div> 
+                    `; 
+                       
+                    /* * Botón para ir al calendario. */ 
+                    document.getElementById("chooseDay").addEventListener( "click", function() { 
+                        window.location.href = "calendari.html"; 
+                    } );
 
-                    </div>
-
-                `;
-
-                modal.style.display = "none";
             }
 
         }

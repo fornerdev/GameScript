@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Escull l'obra</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background: linear-gradient(
+                135deg,
+                #ffe6ef,
+                #fff5f8
+            );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 25px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+
+            text-align: center;
+        }
+
+
+        h1 {
+            color: #333;
+
+            font-size: clamp(
+                28px,
+                7vw,
+                42px
+            );
+
+            margin-bottom: 10px;
+        }
+
+
+        .selected-day {
+            font-size: 19px;
+
+            color: #777;
+
+            margin-bottom: 35px;
+        }
+
+
+        .shows {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 15px;
+        }
+
+
+        .show {
+            width: 100%;
+
+            background: white;
+
+            border: none;
+
+            border-radius: 16px;
+
+            padding: 22px;
+
+            font-size: 21px;
+
+            font-weight: bold;
+
+            color: #333;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.08);
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .show:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+
+        .show:active {
+            transform: scale(0.98);
+        }
+
+
+        /* RESUM */
+
+        .summary {
+            margin-top: 45px;
+
+            padding: 25px;
+
+            background: rgba(255, 255, 255, 0.7);
+
+            border-radius: 16px;
+        }
+
+
+        .summary p {
+            margin: 0;
+
+            font-size: 18px;
+
+            line-height: 1.5;
+
+            color: #555;
+        }
+
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+
+            z-index: 100;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.45);
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 25px;
+        }
+
+
+        .modal-content {
+            background: white;
+
+            width: 100%;
+            max-width: 420px;
+
+            padding: 35px 25px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.2);
+
+            animation: modalAppear 0.3s ease;
+        }
+
+
+        .modal-icon {
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .modal-content h2 {
+            margin: 0 0 25px 0;
+
+            font-size: 28px;
+
+            color: #333;
+        }
+
+
+        .modal-content p {
+            font-size: 19px;
+
+            line-height: 1.5;
+
+            color: #555;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* COMPROMÍS */
+
+        .commitment {
+            font-size: 20px;
+
+            line-height: 1.5;
+
+            color: #333;
+
+            margin-bottom: 20px;
+        }
+
+
+        .commitment strong {
+            display: block;
+
+            margin-top: 8px;
+
+            font-size: 21px;
+        }
+
+
+        .selected-show {
+            margin-top: 15px;
+
+            font-size: 18px;
+
+            color: #555;
+        }
+
+
+        .screenshot-message {
+            margin-top: 25px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #eee;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            color: #333;
+        }
+
+
+        .modal-button {
+            background: #333;
+
+            color: white;
+
+            border: none;
+
+            padding: 14px 28px;
+
+            border-radius: 10px;
+
+            font-size: 17px;
+
+            cursor: pointer;
+
+            margin-top: 10px;
+        }
+
+
+        @keyframes modalAppear {
+
+            from {
+                opacity: 0;
+
+                transform: scale(0.7);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: scale(1);
+            }
+
+        }
+
+
+        /* MÒBIL */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 20px;
+            }
+
+
+            .show {
+                padding: 20px;
+            }
+
+
+            .modal-content {
+                padding: 30px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+        <h1>
+            Quina obra vols veure? 🎭
+        </h1>
+
+
+        <div class="selected-day">
+
+            Has escollit:
+            <strong id="selectedDay"></strong>
+
+        </div>
+
+
+        <div class="shows">
+
+
+            <button
+                class="show"
+                data-show="rey-leon"
+                data-name="El Rey León"
+            >
+                🦁 El Rey León
+            </button>
+
+
+            <button
+                class="show"
+                data-show="mago-pop"
+                data-name="El Mago Pop"
+            >
+                🎩 El Mago Pop
+            </button>
+
+
+            <button
+                class="show"
+                data-show="improshow"
+                data-name="Improshow"
+            >
+                😂 Improshow
+            </button>
+
+
+            <button
+                class="show"
+                data-show="corta-cable"
+                data-name="Corta el cable Rojo"
+            >
+                ✂️ Corta el cable Rojo
+            </button>
+
+
+            <button
+                class="show"
+                data-show="bonobos"
+                data-name="Bonobos"
+            >
+                🐒 Bonobos
+            </button>
+
+
+        </div>
+
+
+        <!-- RESUM -->
+
+        <div class="summary">
+
+            <p>
+                Si us plau, fes un screenshot d'aquest
+                compromís i envia-me'l 📸
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- MODAL -->
+
+    <div
+        class="modal"
+        id="modal"
+    >
+
+        <div class="modal-content">
+
+            <div
+                class="modal-icon"
+                id="modalIcon"
+            >
+                ⚠️
+            </div>
+
+
+            <h2 id="modalTitle">
+            </h2>
+
+
+            <div id="modalBody">
+            </div>
+
+
+            <button
+                class="modal-button"
+                id="closeModal"
+            >
+                D'acord
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+
+        /*
+         * Recuperem el dia escollit
+         * des de calendari.html
+         *
+         * Exemple:
+         * obres.html?dia=Dimecres
+         */
+
+        var params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        var selectedDay =
+            params.get("dia");
+
+
+        /*
+         * Mostrem el dia.
+         */
+
+        document.getElementById("selectedDay")
+            .textContent =
+            selectedDay || "Dia seleccionat";
+
+
+        var modal =
+            document.getElementById("modal");
+
+
+        var modalIcon =
+            document.getElementById("modalIcon");
+
+
+        var modalTitle =
+            document.getElementById("modalTitle");
+
+
+        var modalBody =
+            document.getElementById("modalBody");
+
+
+        var closeModal =
+            document.getElementById("closeModal");
+
+
+        /*
+         * Tancar modal.
+         */
+
+        closeModal.addEventListener(
+            "click",
+            function() {
+
+                modal.style.display = "none";
+
+            }
+        );
+
+
+        /*
+         * Selecció de l'obra.
+         */
+
+        var shows =
+            document.querySelectorAll(".show");
+
+
+        shows.forEach(function(show) {
+
+            show.addEventListener(
+                "click",
+                function() {
+
+                    var selectedShow =
+                        show.getAttribute(
+                            "data-show"
+                        );
+
+
+                    var selectedShowName =
+                        show.getAttribute(
+                            "data-name"
+                        );
+
+
+                    /*
+                     * EL REY LEÓN
+                     */
+
+                    if (
+                        selectedShow ===
+                        "rey-leon"
+                    ) {
+
+                        modalIcon.textContent =
+                            "🦁";
+
+                        modalTitle.textContent =
+                            "T'has flipat!";
+
+                        modalBody.innerHTML =
+                            "";
+
+                        modal.style.display =
+                            "flex";
+
+                        return;
+                    }
+
+
+                    /*
+                     * EL MAGO POP
+                     */
+
+                    if (
+                        selectedShow ===
+                        "mago-pop"
+                    ) {
+
+                        modalIcon.textContent =
+                            "⚠️";
+
+                        modalTitle.textContent =
+                            "Error del sistema";
+
+                        modalBody.innerHTML =
+                            "<p>" +
+                            "Entrades exhaurides!" +
+                            "</p>";
+
+                        modal.style.display =
+                            "flex";
+
+                        return;
+                    }
+
+
+                    /*
+                     * IMPROSHOW
+                     * CORTA EL CABLE ROJO
+                     * BONOBOS
+                     */
+
+                    if (
+                        selectedShow === "improshow" ||
+                        selectedShow === "corta-cable" ||
+                        selectedShow === "bonobos"
+                    ) {
+
+                        modalIcon.textContent =
+                            "🎉";
+
+                        modalTitle.innerHTML =
+                            "Felicitats!";
+
+
+                        modalBody.innerHTML = `
+
+                            <div class="commitment">
+
+                                T'has compromès a:
+
+                                <strong>
+                                    pagar les birres y tapes pre-show!
+                                </strong>
+
+                            </div>
+
+
+                            <div class="selected-show">
+
+                                ${selectedDay}
+                                per la obra:
+                                <strong>
+                                    ${selectedShowName}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="screenshot-message">
+
+                                Fes screenshot i envia'l,
+                                si us plau 📸
+
+                            </div>
+
+                        `;
+
+
+                        modal.style.display =
+                            "flex";
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    </script>
+
+
+</body>
+
+</html>

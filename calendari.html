@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Escull dia</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background: linear-gradient(
+                135deg,
+                #ffe6ef,
+                #fff5f8
+            );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 25px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+
+            font-size: clamp(
+                28px,
+                7vw,
+                42px
+            );
+
+            margin-bottom: 40px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .day {
+            background: white;
+
+            border: none;
+
+            border-radius: 16px;
+
+            padding: 25px 10px;
+
+            min-height: 130px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.08);
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .day:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .weekday {
+            display: block;
+
+            font-size: 16px;
+
+            color: #777;
+
+            margin-bottom: 12px;
+        }
+
+        .date {
+            display: block;
+
+            font-size: 36px;
+
+            font-weight: bold;
+
+            color: #333;
+
+            margin-bottom: 8px;
+        }
+
+        .month {
+            display: block;
+
+            font-size: 15px;
+
+            color: #999;
+        }
+
+
+        /* MODAL */
+
+        .modal {
+            display: none;
+
+            position: fixed;
+
+            z-index: 100;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0, 0, 0, 0.45);
+
+            justify-content: center;
+            align-items: center;
+
+            padding: 25px;
+        }
+
+        .modal-content {
+            background: white;
+
+            width: 100%;
+            max-width: 380px;
+
+            padding: 35px 25px;
+
+            border-radius: 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.2);
+
+            animation: modalAppear 0.3s ease;
+        }
+
+        .modal-icon {
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+        .modal-content h2 {
+            margin: 0 0 25px 0;
+
+            font-size: 25px;
+
+            color: #333;
+        }
+
+        .modal-content p {
+            font-size: 18px;
+
+            color: #666;
+
+            margin-bottom: 25px;
+        }
+
+        .modal-button {
+            background: #333;
+
+            color: white;
+
+            border: none;
+
+            padding: 14px 25px;
+
+            border-radius: 10px;
+
+            font-size: 17px;
+
+            cursor: pointer;
+        }
+
+
+        /* BOTÓ SEGÜENT */
+
+        #nextButton {
+            display: none;
+
+            margin-top: 25px;
+
+            background: #4CAF50;
+
+            color: white;
+
+            border: none;
+
+            padding: 15px 30px;
+
+            border-radius: 12px;
+
+            font-size: 18px;
+
+            cursor: pointer;
+        }
+
+
+        @keyframes modalAppear {
+
+            from {
+                opacity: 0;
+                transform: scale(0.7);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        /* MÒBIL */
+
+        @media (max-width: 600px) {
+
+            .calendar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .day {
+                min-height: 120px;
+            }
+
+            .day:last-child {
+                grid-column: 1 / -1;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>
+            Seguim! Quina tarda vols quedar?
+        </h1>
+
+
+        <div class="calendar">
+
+            <button class="day" data-available="true">
+
+                <span class="weekday">
+                    Dilluns
+                </span>
+
+                <span class="date">
+                    12
+                </span>
+
+                <span class="month">
+                    d'octubre
+                </span>
+
+            </button>
+
+
+            <button class="day" data-available="false">
+
+                <span class="weekday">
+                    Dimarts
+                </span>
+
+                <span class="date">
+                    13
+                </span>
+
+                <span class="month">
+                    d'octubre
+                </span>
+
+            </button>
+
+
+            <button class="day" data-available="true">
+
+                <span class="weekday">
+                    Dimecres
+                </span>
+
+                <span class="date">
+                    14
+                </span>
+
+                <span class="month">
+                    d'octubre
+                </span>
+
+            </button>
+
+
+            <button class="day" data-available="false">
+
+                <span class="weekday">
+                    Dijous
+                </span>
+
+                <span class="date">
+                    15
+                </span>
+
+                <span class="month">
+                    d'octubre
+                </span>
+
+            </button>
+
+
+            <button class="day" data-available="true">
+
+                <span class="weekday">
+                    Divendres
+                </span>
+
+                <span class="date">
+                    16
+                </span>
+
+                <span class="month">
+                    d'octubre
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- BOTÓ SEGÜENT -->
+
+        <button id="nextButton">
+            següent -->
+        </button>
+
+    </div>
+
+
+    <!-- MODAL -->
+
+    <div class="modal" id="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-icon" id="modalIcon">
+                ⚠️
+            </div>
+
+            <h2 id="modalMessage">
+            </h2>
+
+            <button class="modal-button" id="closeModal">
+                D'acord
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        var days = document.querySelectorAll(".day");
+
+        var modal = document.getElementById("modal");
+
+        var modalMessage = document.getElementById("modalMessage");
+
+        var modalIcon = document.getElementById("modalIcon");
+
+        var closeModal = document.getElementById("closeModal");
+
+        var nextButton = document.getElementById("nextButton");
+
+
+        /*
+         * Dia seleccionat.
+         */
+        var selectedDay = null;
+
+
+        /*
+         * Quan es clica un dia.
+         */
+        days.forEach(function(day) {
+
+            day.addEventListener("click", function() {
+
+                var available =
+                    day.getAttribute("data-available") === "true";
+
+
+                /*
+                 * DIMARTS / DIJOUS
+                 */
+                if (!available) {
+
+                    modalIcon.textContent = "⚠️";
+
+                    modalMessage.textContent =
+                        "Error del Sitema: data no disponible";
+
+                    nextButton.style.display = "none";
+
+                    modal.style.display = "flex";
+
+                    return;
+                }
+
+
+                /*
+                 * DILLUNS / DIMECRES / DIVENDRES
+                 */
+                selectedDay =
+                    day.querySelector(".weekday").textContent.trim();
+
+
+                modalIcon.textContent = "✅";
+
+                modalMessage.textContent =
+                    "Data correcte, queda l'ultim pas";
+
+                modal.style.display = "flex";
+
+                /*
+                 * Mostrem el botó següent.
+                 */
+                nextButton.style.display = "inline-block";
+
+            });
+
+        });
+
+
+        /*
+         * Tancar modal.
+         */
+        closeModal.addEventListener("click", function() {
+
+            modal.style.display = "none";
+
+        });
+
+
+        /*
+         * SEGÜENT
+         *
+         * Anem a obres.html
+         */
+        nextButton.addEventListener("click", function() {
+
+            window.location.href =
+            "obres.html?dia=" + encodeURIComponent(selectedDay);
+
+        });
+
+    </script>
+
+</body>
+</html>
